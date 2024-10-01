@@ -1,0 +1,20 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "ClientConnect CRM - Backend (Node.js) Overview Welcome to the ClientConnect CRM backend! This is the server-side component of a full-stack customer relationship management (CRM) application. It is built using Node.js and Express.js to handle API requests, authentication, ticket management, real-time communication, and more.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "mongoose": "^8.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}
