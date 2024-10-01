@@ -7,14 +7,18 @@ assignees: dkerobean
 
 ---
 
-### Details and Assumptions
- * use toast alerts to give warning or success messages
- * perform input validation
+**As a** [role]  
+ **I need** [function]  
+ **So that** [benefit]  
+   
+ ### Details and Assumptions
+ * [document what you know]
    
  ### Acceptance Criteria  
    
- 
-gherkin
- Given i am a user
- When i visit the account page
- Then i should be able to login or register
+ ```gherkin
+ Given [some context]
+ When [certain action is taken]
+ Then [the outcome of action is observed]
+ ```
+
