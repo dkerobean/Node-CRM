@@ -1,0 +1,41 @@
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.pid.lock
+
+# Directory for storing environment variables
+.env
+
+# OS-specific files (Mac and Windows)
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+
+# Debugger and profiler files
+*.out
+*.err
+
+# Optional npm cache directory
+.npm/
+
+# Coverage directory (if using test coverage)
+coverage/
+
+# Build directory (if you're bundling or transpiling files)
+dist/
+
+# Temporary files
+*.tmp
+*.swp
+
