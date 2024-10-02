@@ -1,7 +1,7 @@
 const express = require('express');
 const { getUsers } = require('../controllers/userController');
 const router = express.Router();
-const { loginUser, registerOrganization, verifyEmail } = require('../controllers/authController')
+const { loginUser, registerOrganization, verifyEmail } = require('../controllers/authController');
 
 // Define the /api/users route
 router.get('/users', getUsers);
