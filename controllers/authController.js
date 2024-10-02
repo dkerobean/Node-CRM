@@ -6,19 +6,25 @@ const jwt = require('jsonwebtoken');
 // Register Organization and Owner with JWT
 
 const registerOrganization = async (req, res) => {
-    const { ownerName, email, password, orgName, country} = req.body;
+    console.log(req.body); // Log the request body
+    const { ownerName, email, password, orgName } = req.body;
+
+    // Check if password is defined
+    if (!password) {
+        return res.status(400).json({ message: 'Password is required' });
+    }
 
     try {
-        const orgExists = await Organization.findOne({ email});
-        // check if org exists
+        // Check if organization already exists
+        const orgExists = await Organization.findOne({ name: orgName });
         if (orgExists) {
             return res.status(400).json({ message: 'Organization already exists' });
         }
 
-        // create hashed password for owner
-        const hashedPassword = await bcrypt.hash(password, 10);
+        // Create hashed password for owner
+        const hashedPassword = await bcrypt.hash(password, 10); // This is where the error might occur
 
-        // create org owner
+        // Create organization owner
         const owner = new User({
             name: ownerName,
             email,
@@ -28,8 +34,7 @@ const registerOrganization = async (req, res) => {
 
         await owner.save();
 
-        // create the org
-
+        // Create the organization
         const organization = new Organization({
             name: orgName,
             email,
@@ -39,9 +44,11 @@ const registerOrganization = async (req, res) => {
         await organization.save();
 
         // Generate JWT for the owner
-        const token = jwt.sign({ userId: owner._id, organizationId: organization._id, role: owner.role}, process.env.JWT_SECRET,{
-            expiresIn: '2h'
-        });
+        const token = jwt.sign(
+            { userId: owner._id, organizationId: organization._id, role: owner.role },
+            process.env.JWT_SECRET,
+            { expiresIn: '2h' }
+        );
 
         res.status(201).json({
             message: 'Registration success',
@@ -49,9 +56,11 @@ const registerOrganization = async (req, res) => {
             token,
         });
     } catch (error) {
+        console.error('Error during registration:', error); // Log the error for debugging
         res.status(500).json({ message: error.message });
     }
 };
+
 
 // Login User
 const loginUser = async (req, res) => {
@@ -61,7 +70,7 @@ const loginUser = async (req, res) => {
         // Check if user exists
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(404).json({ message: 'Invalid email or password' });
+            return res.status(404).json({ message: 'User with this email does not exist' });
         }
 
         // Compare password with hashed password
