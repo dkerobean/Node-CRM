@@ -12,4 +12,7 @@ router.post('/register', registerOrganization);
 // Route for logging in
 router.post('/login', loginUser);
 
+// Route for email verification
+router.get('/verify-email', verifyEmail);
+
 module.exports = router;

@@ -6,8 +6,14 @@ const organizationSchema = new mongoose.Schema({
   phone: { type: String, required: false },
   email: { type: String, required: false, unique: true },
   createdAt: { type: Date, default: Date.now },
-  // Optional: Store reference to the organization owner or admin
-  owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User' // References the owner user
+  },
+  users: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User' // Array of user IDs associated with the organization
+  }],
 });
 
 const Organization = mongoose.model('Organization', organizationSchema);

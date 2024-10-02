@@ -3,8 +3,14 @@ const User = require('../models/userModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-// Register Organization and Owner with JWT
+const { sendVerificationEmail } = require('../middleware/mailer');
 
+// Function to generate a random 5-digit code
+const generateVerificationCode = () => {
+    return Math.floor(10000 + Math.random() * 90000).toString();
+};
+
+// Register Organization and Owner with JWT
 const registerOrganization = async (req, res) => {
     console.log(req.body); // Log the request body
     const { ownerName, email, password, orgName } = req.body;
@@ -43,6 +49,17 @@ const registerOrganization = async (req, res) => {
 
         await organization.save();
 
+        // generate verification code
+        const verificationCode = generateVerificationCode();
+
+        // set verification code and expiration
+        owner.verificationCode = verificationCode;
+        owner.verificationExpires = Date.now() + 3600000;
+        await owner.save();
+
+        // send verification email
+        await sendVerificationEmail(owner.email, verificationCode);
+
         // Generate JWT for the owner
         const token = jwt.sign(
             { userId: owner._id, organizationId: organization._id, role: owner.role },
@@ -51,10 +68,14 @@ const registerOrganization = async (req, res) => {
         );
 
         res.status(201).json({
-            message: 'Registration success',
+            message: 'Registration success, please verify your email',
             organization,
             token,
         });
+
+        // Send verification email
+        await sendVerificationEmail(owner.email, token);
+
     } catch (error) {
         console.error('Error during registration:', error);
         res.status(500).json({ message: error.message });
@@ -94,4 +115,35 @@ const loginUser = async (req, res) => {
     }
 };
 
-module.exports = { registerOrganization, loginUser };
+
+// Verify Email
+const verifyEmail = async (req, res) => {
+    const { email, code } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+
+        // Check if user exists and if the code is correct
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Check if the verification code matches and is not expired
+        if (user.verificationCode !== code || user.verificationExpires < Date.now()) {
+            return res.status(400).json({ message: 'Invalid or expired verification code' });
+        }
+
+        // If valid, mark the user as verified
+        user.isVerified = true;
+        user.verificationCode = undefined; // Clear the code
+        user.verificationExpires = undefined; // Clear the expiration
+        await user.save();
+
+        res.status(200).json({ message: 'Email verified successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+
+module.exports = { registerOrganization, loginUser, verifyEmail };
