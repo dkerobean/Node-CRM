@@ -56,7 +56,7 @@ const registerOrganization = async (req, res) => {
             token,
         });
     } catch (error) {
-        console.error('Error during registration:', error); // Log the error for debugging
+        console.error('Error during registration:', error);
         res.status(500).json({ message: error.message });
     }
 };
@@ -64,7 +64,8 @@ const registerOrganization = async (req, res) => {
 
 // Login User
 const loginUser = async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password } = req.query;
+    console.log(email);
 
     try {
         // Check if user exists
