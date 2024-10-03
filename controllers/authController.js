@@ -13,11 +13,11 @@ const generateVerificationCode = () => {
 // Register Organization and Owner with JWT
 const registerOrganization = async (req, res) => {
     console.log(req.body); // Log the request body
-    const { ownerName, email, password, orgName } = req.body;
+    const { ownerName, email, password, confirmPassword, orgName } = req.body;
 
-    // Check if password is defined
-    if (!password) {
-        return res.status(400).json({ message: 'Password is required' });
+    // Check if password and confirmation match
+    if (!password || password !== confirmPassword) {
+        return res.status(400).json({ message: 'Passwords do not match' });
     }
 
     try {
@@ -27,10 +27,10 @@ const registerOrganization = async (req, res) => {
             return res.status(400).json({ message: 'Organization already exists' });
         }
 
-        // Create hashed password for owner
-        const hashedPassword = await bcrypt.hash(password, 10); // This is where the error might occur
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Create organization owner
+        // Create the organization owner
         const owner = new User({
             name: ownerName,
             email,
@@ -49,38 +49,32 @@ const registerOrganization = async (req, res) => {
 
         await organization.save();
 
-        // generate verification code
+        // Generate verification code
         const verificationCode = generateVerificationCode();
 
-        // set verification code and expiration
+        // Set verification code and expiration
         owner.verificationCode = verificationCode;
-        owner.verificationExpires = Date.now() + 3600000;
+        owner.verificationExpires = Date.now() + (process.env.VERIFICATION_EXPIRY || 3600000); // Expiry is now configurable
         await owner.save();
 
-        // send verification email
-        await sendVerificationEmail(owner.email, verificationCode);
+        // Send verification email
+        const emailSent = await sendVerificationEmail(owner.email, verificationCode);
 
-        // Generate JWT for the owner
-        const token = jwt.sign(
-            { userId: owner._id, organizationId: organization._id, role: owner.role },
-            process.env.JWT_SECRET,
-            { expiresIn: '2h' }
-        );
+        if (!emailSent.success) {
+            return res.status(500).json({ message: 'Failed to send verification email' });
+        }
 
         res.status(201).json({
             message: 'Registration success, please verify your email',
             organization,
-            token,
         });
-
-        // Send verification email
-        await sendVerificationEmail(owner.email, token);
 
     } catch (error) {
         console.error('Error during registration:', error);
         res.status(500).json({ message: error.message });
     }
 };
+
 
 
 // Login User
@@ -118,7 +112,7 @@ const loginUser = async (req, res) => {
 
 // Verify Email
 const verifyEmail = async (req, res) => {
-    const { email, code } = req.body;
+    const { email, code } = req.query;
 
     try {
         const user = await User.findOne({ email });

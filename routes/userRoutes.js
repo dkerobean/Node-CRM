@@ -13,6 +13,6 @@ router.post('/register', registerOrganization);
 router.post('/login', loginUser);
 
 // Route for email verification
-router.get('/verify-email', verifyEmail);
+router.post('/verify-email', verifyEmail);
 
 module.exports = router;

@@ -1,31 +1,45 @@
-const nodemailer = require('nodemailer');
+const AWS = require('aws-sdk');
 
-console.log(process.env.EMAIL_USER, process.env.EMAIL_PASS, process.env.EMAIL_HOST);
-
-const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT,
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-    },
-    debug: true,
-    logger: true,
+// Configure AWS SES credentials, region, and logger
+AWS.config.update({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    region: "eu-north-1",
+    logger: console
 });
+
+const ses = new AWS.SES();
 
 const sendVerificationEmail = async (to, verificationCode) => {
     const verificationLink = `${process.env.BASE_URL}/verify-email?code=${verificationCode}`;
-    const mailOptions = {
-        from: process.env.EMAIL_FROM,
-        to,
-        subject: 'Verify Your Email',
-        text: `Your verification code is: ${verificationCode}. Please enter this code to verify your email.`,
+    const emailBody = `
+        <p>Hi,</p>
+        <p>Your verification code is: <strong style="color: black;">${verificationCode}</strong>.</p>
+        <p>Please enter this code to verify your email.</p>
+        <p>If you did not request this, please ignore this email.</p>
+    `;
+
+    const params = {
+        Source: process.env.EMAIL_FROM,
+        Destination: {
+            ToAddresses: [to],
+        },
+        Message: {
+            Subject: {
+                Data: 'Verify Your Email',
+            },
+            Body: {
+                Html: {
+                    Data: emailBody,
+                },
+            },
+        },
     };
 
     try {
-        await transporter.sendMail(mailOptions);
+        const data = await ses.sendEmail(params).promise();
+        console.log('Email sent successfully:', data);
         return { success: true, message: 'Verification email sent successfully.' };
-        console.log(process.env.EMAIL_USER, process.env.EMAIL_PASS, process.env.EMAIL_HOST);
     } catch (error) {
         console.error('Error sending email:', error);
         return { success: false, message: 'Error sending verification email. Please try again later.', error };
