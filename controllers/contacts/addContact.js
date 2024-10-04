@@ -3,7 +3,7 @@ const User = require("../../models/userModel");
 
 const addContact = async (req, res) => {
     try {
-        const { name, email, phone, company, position, notes, status, assignedTo } = req.query
+        const { name, email, phone, company, position, notes, status, assignedTo } = req.body;
 
         if (!name || !email || !phone) {
             return res.status(400).json({ message: 'Name, email, and phone are required fields.' });
