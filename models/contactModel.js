@@ -21,7 +21,7 @@ const ContactSchema = new Schema({
      },
      createdAt : { type: Date, default: Date.now },
      updatedAt : { type: Date, default: Date.now },
-     assignedTo: { Schema.Types.ObjectId, ref: 'User' }
+     assignedTo: { type: Schema.Types.ObjectId, ref: 'User' }
 
     });
 
