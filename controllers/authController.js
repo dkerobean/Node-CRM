@@ -12,7 +12,7 @@ const generateVerificationCode = () => {
 
 // Register Organization and Owner with JWT
 const registerOrganization = async (req, res) => {
-    console.log(req.body); // Log the request body
+ 
     const { ownerName, email, password, confirmPassword, orgName } = req.body;
 
     // Check if password and confirmation match
