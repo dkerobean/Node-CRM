@@ -2,9 +2,10 @@ const express = require('express');
 const { getUsers } = require('../controllers/userController');
 const router = express.Router();
 const { loginUser, registerOrganization, verifyEmail } = require('../controllers/authController');
+const auth = require('../middleware/authMiddleware');
 
 // Define the /api/users route
-router.get('/users', getUsers);
+router.get('/users', auth, getUsers);
 
 // Route for registering an organization
 router.post('/register', registerOrganization);

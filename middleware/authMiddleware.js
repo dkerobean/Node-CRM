@@ -1,29 +1,22 @@
-const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken'); // Ensure you have this package installed
 
-const protect = (req, res, next) => {
-  let token;
+const auth = (req, res, next) => {
+    // Get the token from the request headers
+    const token = req.header('Authorization')?.split(' ')[1]; // Bearer <token>
 
-  // Check if Authorization header exists and starts with 'Bearer'
-  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    try {
-      // Get token from header
-      token = req.headers.authorization.split(' ')[1];
-
-      // Verify token
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-      // Attach the user and organization to the request object
-      req.user = decoded;
-
-      next();
-    } catch (error) {
-      res.status(401).json({ message: 'Not authorized, token failed' });
+    if (!token) {
+        return res.status(401).json({ message: 'No token, authorization denied.' });
     }
-  }
 
-  if (!token) {
-    res.status(401).json({ message: 'Not authorized, no token' });
-  }
+    try {
+        // Verify the token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET); // Ensure JWT_SECRET is set in your environment variables
+        req.user = decoded; // Save the decoded user data in the request object
+        next(); // Move to the next middleware or route handler
+    } catch (error) {
+        console.error('Token is not valid:', error);
+        return res.status(401).json({ message: 'Token is not valid, authorization denied.' });
+    }
 };
 
-module.exports = { protect };
+module.exports = auth;
