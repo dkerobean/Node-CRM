@@ -4,6 +4,11 @@ const deleteContact = async (req, res) => {
     try {
         const { id } = req.params;
 
+        // Check if the user is an admin
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Access denied: Only admins can delete contacts.' });
+        }
+
         // find contact b id and delete
         const deletedContact = await Contact.findByIdAndDelete(id);
 
