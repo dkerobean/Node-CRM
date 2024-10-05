@@ -3,13 +3,13 @@ const User = require("../../models/userModel");
 
 const addContact = async (req, res) => {
     try {
-        const { name, email, phone, company, position, notes, status, assignedTo } = req.body;
+        const { name, email, phone, company, position, notes, status, leadDetails, assignedTo } = req.body;
 
         if (!name || !email || !phone) {
             return res.status(400).json({ message: 'Name, email, and phone are required fields.' });
         }
 
-        // Check is user asigned to exist
+        // Check if assigned user exists
         if (assignedTo) {
             const userExists = await User.findById(assignedTo);
             if (!userExists) {
@@ -17,7 +17,7 @@ const addContact = async (req, res) => {
             }
         }
 
-        // create new contact instance
+        // Create new contact
         const newContact = new Contact({
             name,
             email,
@@ -26,10 +26,9 @@ const addContact = async (req, res) => {
             position,
             notes,
             status: status || 'prospect',
+            leadDetails: status === 'lead' ? leadDetails : undefined, // Only include lead details if status is 'lead'
             assignedTo: assignedTo || null
         });
-
-        // save contact to db
 
         const savedContact = await newContact.save();
         return res.status(201).json({
@@ -42,5 +41,6 @@ const addContact = async (req, res) => {
         return res.status(500).json({ message: 'Server error. Please try again later.' });
     }
 };
+
 
 module.exports = { addContact };

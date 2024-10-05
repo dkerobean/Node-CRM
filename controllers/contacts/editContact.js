@@ -4,14 +4,13 @@ const User = require("../../models/userModel");
 const editContact = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, email, phone, company, position, notes, status, assignedTo } = req.body;
+        const { name, email, phone, company, position, notes, status, leadDetails, assignedTo } = req.body;
 
-        // Validate required fields
         if (!name || !email || !phone) {
             return res.status(400).json({ message: 'Name, email, and phone are required fields.' });
         }
 
-        // Check if assigned user exists (if provided)
+        // Check if assigned user exists
         if (assignedTo) {
             const userExists = await User.findById(assignedTo);
             if (!userExists) {
@@ -21,16 +20,17 @@ const editContact = async (req, res) => {
 
         const updatedContact = await Contact.findByIdAndUpdate(
             id, {
-                    name,
-                    email,
-                    phone,
-                    company,
-                    position,
-                    notes,
-                    status: status || 'prospect',
-                    assignedTo: assignedTo || null
+                name,
+                email,
+                phone,
+                company,
+                position,
+                notes,
+                status: status || 'prospect',
+                leadDetails: status === 'lead' ? leadDetails : undefined, // Update lead details only if status is 'lead'
+                assignedTo: assignedTo || null
             },
-            { new: true } // Return the updated contact
+            { new: true }
         );
 
         if (!updatedContact) {
@@ -48,4 +48,4 @@ const editContact = async (req, res) => {
     }
 };
 
-module.exports = { editContact }; 
+module.exports = { editContact };
