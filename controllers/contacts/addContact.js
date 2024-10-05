@@ -9,6 +9,12 @@ const addContact = async (req, res) => {
             return res.status(400).json({ message: 'Name, email, and phone are required fields.' });
         }
 
+        // Check if the email already exists
+        const existingContact = await Contact.findOne({ email });
+        if (existingContact) {
+            return res.status(409).json({ message: 'Email already exists. Please use a different email.' });
+        }
+
         // Check if assigned user exists
         if (assignedTo) {
             const userExists = await User.findById(assignedTo);
@@ -41,6 +47,5 @@ const addContact = async (req, res) => {
         return res.status(500).json({ message: 'Server error. Please try again later.' });
     }
 };
-
 
 module.exports = { addContact };
