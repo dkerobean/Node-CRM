@@ -7,7 +7,7 @@ const isAdmin = async (req, res, next) => {
     try {
         const user = await User.findById(req.user._id);
 
-        if (!user || (user.role !== 'admin' && user.role !== 'manager')) {
+        if (!user || (user.role !== 'admin' && user.role !== 'owner')) {
             return res.status(403).json({ message: 'Access denied. Admins only.' });
         }
 
