@@ -5,6 +5,7 @@ const userRoutes = require('./routes/userRoutes');
 const contactRoutes = require('./routes/contactRoutes');
 const taskRoutes = require('./routes/taskRoutes');
 const auth = require('./middleware/authMiddleware');
+const isAdmin = require('./middleware/isAdmin');
 
 dotenv.config();
 connectDB();  // Connect to MongoDB
@@ -19,6 +20,6 @@ app.use('/api', userRoutes);
 app.use('/api/contact', auth, contactRoutes);
 
 // task routes
-app.use('/api/tasks', auth, taskRoutes);
+app.use('/api/tasks', auth, isAdmin, taskRoutes);
 
 module.exports = app;
