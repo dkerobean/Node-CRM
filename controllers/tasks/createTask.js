@@ -1,5 +1,6 @@
 const Task = require("../../models/taskModel");
 const User = require("../../models/userModel");
+const Notification = require("../../models/notificationModel");
 const { sendTaskNotificationEmail } = require('../../middleware/sendTaskNotification');
 
 const createTask = async (req, res) => {
@@ -28,6 +29,19 @@ const createTask = async (req, res) => {
 
         // Format the due date for the notification
         const formattedDueDate = new Date(dueDate).toLocaleDateString(); // Format the due date
+
+        // create notification message
+         const notificationMessage = `You have been assigned a new task: "${name}". Due Date: ${formattedDueDate}`;
+
+        // create a notification
+        const notification = new Notification({
+            user: assignee,
+            message: notificationMessage
+        });
+
+        // save notification
+         await notification.save()
+
 
         // Send notification to the assignee
         const subject = 'New Task Assigned';
