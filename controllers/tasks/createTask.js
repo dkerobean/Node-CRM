@@ -3,7 +3,7 @@ const User = require("../../models/userModel");
 
 const createTask = async (req, res) => {
     try {
-        const { description, assignee, dueDate, priority } = req.body;
+        const { name, description, assignee, dueDate, priority, createdBy } = req.body;
         adminId = req.user._id;
 
         // check if assignee exists
@@ -14,6 +14,7 @@ const createTask = async (req, res) => {
 
         // crete a task
         const newTask = new Task ({
+            name,
             description,
             assignee,
             dueDate,
@@ -24,7 +25,7 @@ const createTask = async (req, res) => {
         // save the task
         await newTask.save();
 
-        response.status(201).json({
+        res.status(201).json({
             message: 'Task created successfully',
             task: newTask
         });
