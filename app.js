@@ -1,6 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
+const { swaggerUi, swaggerDocs } = require('./swagger');
 
 // routes
 const userRoutes = require('./routes/userRoutes');
@@ -18,6 +19,9 @@ connectDB();  // Connect to MongoDB
 
 const app = express();
 app.use(express.json());  // To parse JSON requests
+
+// Swagger UI setup
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Use the user routes
 app.use('/api', userRoutes);
