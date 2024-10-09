@@ -6,7 +6,6 @@ const editTask = async (req, res) => {
         const { taskId } = req.params;
         const { name, description, assignee, dueDate, priority, status } = req.body;
 
-        console.log(taskId);
         // Validate required fields
         if (!name || !description || !dueDate) {
             return res.status(400).json({ message: 'Name, description, and due date are required fields.' });
