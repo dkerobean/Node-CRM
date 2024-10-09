@@ -23,11 +23,12 @@ const editNote = async (req, res) => {
 
         if (!updatedNote) {
             return res.status(404).json({ message: 'Note not found' });
+
         }
 
         return res.status(200).json({
             message: 'Note updated successfully',
-            task: updatedTask
+            note: updatedNote
         });
 
     } catch (error) {

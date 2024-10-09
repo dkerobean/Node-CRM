@@ -13,7 +13,7 @@ router.post('/add', addNote);
 router.get('/all', getAllNotes)
 
 // edit notes
-router.put('/edit:/noteId', editNote)
+router.put('/edit/:noteId', editNote)
 
 
 module.exports = router;

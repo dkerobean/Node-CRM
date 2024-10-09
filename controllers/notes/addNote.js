@@ -23,7 +23,7 @@ const addNote = async (req, res) => {
         // save new note
         const savedNote = await newNote.save();
         res.status(201).json({
-            message: 'Note daved successfully',
+            message: 'Note saved successfully',
             note: savedNote
         });
     } catch (error) {
