@@ -5,10 +5,10 @@ const getAllNotes = async (req, res) => {
         const notes = await Note.find();
         return res.status(200).json({
             message: "Notes retrieved Successfully",
-            tasks
+            notes
         });
     } catch (error) {
-    console.error('Error retrieving tasks:', error);
+    console.error('Error retrieving notes:', error);
         return res.status(500).json({ message: 'Server error. Please try again later.' });
     }
 };
