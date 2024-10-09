@@ -4,7 +4,7 @@ const Note = require('../../models/noteModel');
 const deleteNote =  async (req, res) => {
     try {
 
-        const noteId = req.params;
+        const { noteId } = req.params;
 
         // find and delete the note
         const deletedNote = await Note.findByIdAndDelete({
