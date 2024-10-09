@@ -8,6 +8,7 @@ const userRoutes = require('./routes/userRoutes');
 const contactRoutes = require('./routes/contactRoutes');
 const taskRoutes = require('./routes/taskRoutes');
 const dealRoutes = require('./routes/dealRoutes');
+const noteRoutes = require('./routes/noteRoutes');
 
 // middleware routes
 const auth = require('./middleware/authMiddleware');
@@ -35,6 +36,8 @@ app.use('/api/tasks', auth, isAdmin, taskRoutes);
 // deal routes
 app.use('/api/deals', auth, dealRoutes);
 
+// note routes
+app.use('/api/notes', auth, noteRoutes);
 
 
 module.exports = app;
