@@ -13,6 +13,7 @@ const noteSchema = new mongoose.Schema({
         trim: true,
     },
     label: {
+        type: 'String',
         enum: ['Work', 'Personal', 'Important'],
         default: 'Personal'
     },
