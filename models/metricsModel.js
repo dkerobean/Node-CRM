@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const metricsSchema = new mongoose.Schema({
+    scope: {
+        type: String,
+        default: 'global' 
+    },
     totalLeads: Number,
     totalClients: Number,
     totalProspects: Number,
