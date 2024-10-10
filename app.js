@@ -9,6 +9,7 @@ const contactRoutes = require('./routes/contactRoutes');
 const taskRoutes = require('./routes/taskRoutes');
 const dealRoutes = require('./routes/dealRoutes');
 const noteRoutes = require('./routes/noteRoutes');
+const metricsRoutes = require('./routes/metricRoutes');
 
 // middleware routes
 const auth = require('./middleware/authMiddleware');
@@ -38,6 +39,9 @@ app.use('/api/deals', auth, dealRoutes);
 
 // note routes
 app.use('/api/notes', auth, noteRoutes);
+
+// metric routes
+app.use('/api/metrics', auth, metricsRoutes);
 
 
 module.exports = app;
