@@ -38,6 +38,13 @@ const addDeal = async (req, res) => {
             return res.status(404).json({ message: 'Organization not found' });
         }
 
+        // Prepare files for saving
+        const files = req.files.map(file => ({
+            fileName: file.originalname,
+            filePath: file.path,
+            uploadedAt: Date.now()
+        }));
+
         // Create a new deal
         const newDeal = new Deal({
             name,
@@ -50,7 +57,8 @@ const addDeal = async (req, res) => {
             stage: stage || 'Initial Contact', // Default stage if not provided
             createdBy,
             notes,
-            organization
+            organization,
+            files
         });
 
         // Save the deal to the database

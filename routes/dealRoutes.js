@@ -3,6 +3,8 @@ const { addDeal } = require('../controllers/deal/createDeal');
 const { getAllDeals } = require('../controllers/deal/viewDeals');
 const { editDeal } = require('../controllers/deal/editDeal');
 
+upload = require('../middleware/uploadMiddleware');
+
 const router = express.Router();
 
 /**
@@ -48,7 +50,7 @@ const router = express.Router();
  *       500:
  *         description: Internal server error
  */
-router.post('/add', addDeal);
+router.post('/add', upload.array('files'), addDeal);
 
 /**
  * @swagger

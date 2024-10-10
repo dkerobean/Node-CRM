@@ -49,6 +49,11 @@ const dealSchema = new mongoose.Schema({
     notes: {
         type: String,
     },
+    files: [{ 
+        fileName: { type: String, required: true },
+        filePath: { type: String, required: true }, // Path to the stored file
+        uploadedAt: { type: Date, default: Date.now }
+    }]
 }, {
     timestamps: true, // Automatically manages createdAt and updatedAt fields
 });
