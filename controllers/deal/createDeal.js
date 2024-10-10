@@ -16,7 +16,7 @@ const addDeal = async (req, res) => {
             closeDate,
             stage,
             notes,
-            organization
+            organization,
         } = req.body;
         const createdBy = req.user._id;
 
@@ -39,11 +39,11 @@ const addDeal = async (req, res) => {
         }
 
         // Prepare files for saving
-        const files = req.files.map(file => ({
+        const files = req.files ? req.files.map(file => ({
             fileName: file.originalname,
             filePath: file.path,
             uploadedAt: Date.now()
-        }));
+        })) : []; // Default to an empty array if req.files is undefined
 
         // Create a new deal
         const newDeal = new Deal({
@@ -73,5 +73,6 @@ const addDeal = async (req, res) => {
         return res.status(500).json({ message: 'Server error. Please try again later.' });
     }
 };
+
 
 module.exports = { addDeal };
