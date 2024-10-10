@@ -42,9 +42,20 @@ const ContactSchema = new Schema({
         priority: { type: String, enum: ['Low', 'Medium', 'High'], default: 'Low' },
         followUpDate: { type: Date }
     },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now },
-    assignedTo: { type: Schema.Types.ObjectId, ref: 'User', required: false, trim: true },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
+    },
+    assignedTo: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: false,
+        trim: true
+    },
     organization: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Organization',
