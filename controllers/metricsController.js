@@ -74,6 +74,7 @@ exports.getMetrics = async (req, res) => {
         // Get the user's organization
         const user = await User.findById(userId).populate('organization');
         const organizationId = user.organization;
+        console.log(organizationId);
 
         const metrics = await Metrics.findOne({ organizationId });
 
