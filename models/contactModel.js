@@ -2,7 +2,11 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const ContactSchema = new Schema({
-    name: { type: String, required: true, trim: true },
+    name: {
+        type: String,
+        required: true,
+        trim: true
+    },
     email: {
         type: String,
         required: true,
@@ -10,10 +14,24 @@ const ContactSchema = new Schema({
         unique: true,
         match: [/.+@.+\..+/, 'Please enter a valid email address']
     },
-    phone: { type: String, required: true, trim: true },
-    company: { type: String, required: true, trim: true },
-    position: { type: String, trim: true },
-    notes: { type: String, trim: true },
+    phone: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    company: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    position: {
+        type: String,
+        trim: true
+    },
+    notes: {
+        type: String,
+        trim: true
+    },
     status: {
         type: String,
         enum: ['lead', 'client', 'prospect'],
@@ -26,7 +44,12 @@ const ContactSchema = new Schema({
     },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
-    assignedTo: { type: Schema.Types.ObjectId, ref: 'User', required: false, trim: true }
+    assignedTo: { type: Schema.Types.ObjectId, ref: 'User', required: false, trim: true },
+    organization: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Organization',
+        required: true
+    },
 });
 
 // Hook to update `updatedAt` before saving

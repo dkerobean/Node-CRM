@@ -5,7 +5,7 @@ const { sendTaskNotificationEmail } = require('../../middleware/sendTaskNotifica
 
 const createTask = async (req, res) => {
     try {
-        const { name, description, assignee, dueDate, priority, createdBy } = req.body;
+        const { name, description, assignee, dueDate, priority, organization, createdBy } = req.body;
         adminId = req.user._id;
 
         // check if assignee exists
@@ -21,6 +21,7 @@ const createTask = async (req, res) => {
             assignee,
             dueDate,
             priority,
+            organization,
             createdBy: adminId,
         });
 

@@ -23,6 +23,8 @@ const auth = async (req, res, next) => {
 
         // Attach the user object to the request
         req.user = user;
+        req.organizationId = user.organization;
+
 
         next(); // Move to the next middleware or route handler
     } catch (error) {

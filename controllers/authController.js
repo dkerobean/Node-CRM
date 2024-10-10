@@ -12,7 +12,7 @@ const generateVerificationCode = () => {
 
 // Register Organization and Owner with JWT
 const registerOrganization = async (req, res) => {
- 
+
     const { ownerName, email, password, confirmPassword, orgName } = req.body;
 
     // Check if password and confirmation match
@@ -103,6 +103,7 @@ const loginUser = async (req, res) => {
         res.status(200).json({
             message: 'Login successful',
             token,
+            organizationId: user.organization,
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
