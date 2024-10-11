@@ -10,6 +10,7 @@ const taskRoutes = require('./routes/taskRoutes');
 const dealRoutes = require('./routes/dealRoutes');
 const noteRoutes = require('./routes/noteRoutes');
 const metricsRoutes = require('./routes/metricRoutes');
+const fileRoutes = require('./routes/fileRouts');
 
 // middleware routes
 const auth = require('./middleware/authMiddleware');
@@ -42,6 +43,9 @@ app.use('/api/notes', auth, noteRoutes);
 
 // metric routes
 app.use('/api/metrics', auth, metricsRoutes);
+
+// file routes
+app.use('/api/files', auth, fileRoutes);
 
 
 module.exports = app;
