@@ -1,9 +1,9 @@
 const File = require('../../models/fileModel');
 
-const uploadFile = async (req, res) => {
+const createFile = async (req, res) => {
     try {
-        const { organizationId } = req.body;
-        const userId = req.user.id; 
+        const { organizationId, name } = req.body;
+        const userId = req.user.id;
 
         // Create a new file document
         const file = new File({
@@ -21,4 +21,4 @@ const uploadFile = async (req, res) => {
     }
 };
 
-module.exports = { uploadFile };
+module.exports = { createFile };

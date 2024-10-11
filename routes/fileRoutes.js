@@ -18,3 +18,6 @@ router.get('/file/:fileId', fileController.getFileById);
 
 // Delete a file
 router.delete('/file/:fileId', deleteFile);
+
+
+module.exports = router;

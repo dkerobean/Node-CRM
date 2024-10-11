@@ -10,7 +10,7 @@ const taskRoutes = require('./routes/taskRoutes');
 const dealRoutes = require('./routes/dealRoutes');
 const noteRoutes = require('./routes/noteRoutes');
 const metricsRoutes = require('./routes/metricRoutes');
-const fileRoutes = require('./routes/fileRouts');
+const fileRoutes = require('./routes/fileRoutes');
 
 // middleware routes
 const auth = require('./middleware/authMiddleware');
