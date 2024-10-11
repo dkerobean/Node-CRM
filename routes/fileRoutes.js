@@ -11,7 +11,7 @@ const router = express.Router();
 router.post('/upload', upload.single('file'), createFile);
 
 // Get all files for an organization
-router.get('/:organizationId', fileController.getFiles);
+router.get('/view/:organizationId', fileController.getFiles);
 
 // Get a single file by ID
 router.get('/file/:fileId', fileController.getFileById);
