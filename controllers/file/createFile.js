@@ -2,12 +2,13 @@ const File = require('../../models/fileModel');
 
 const createFile = async (req, res) => {
     try {
+        console.log(req.body);
         const { organizationId, name } = req.body;
         const userId = req.user.id;
 
         // Create a new file document
         const file = new File({
-            name: req.file.filename,
+            name: name || req.file.filename,
             path: req.file.path,
             originalName: req.file.originalname,
             organization: organizationId,
