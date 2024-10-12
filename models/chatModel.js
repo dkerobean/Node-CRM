@@ -1,11 +1,17 @@
 const mongoose = require('mongoose');
 
 const chatSchema = new mongoose.Schema({
-    users: [{
-        type: mongoose.Schema.Types.ObjectId,
+    users: {
+        type: [mongoose.Schema.Types.ObjectId],
         ref: 'User',
+        validate: {
+            validator: function (v) {
+                return v.length === 2; // Ensure exactly two users
+            },
+            message: 'A chat must have exactly two users.'
+        },
         required: true
-    }],
+    },
     lastMessage: {
         type: String,
         default: ''
@@ -18,5 +24,5 @@ const chatSchema = new mongoose.Schema({
     timestamps: true
 });
 
-const chat = new mongoose.model('Chat', chatSchema);
-module.exports = chat;
+const Chat = mongoose.model('Chat', chatSchema);
+module.exports = Chat;

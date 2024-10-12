@@ -1,4 +1,3 @@
-const Chat = require('../../models/chatModel');
 const Message = require('../../models/messageModel');
 
 // Send a message in a chat

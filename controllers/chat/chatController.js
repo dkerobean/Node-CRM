@@ -1,10 +1,13 @@
 const Chat = require('../../models/chatModel');
-const Message = require('../../models/messageModel');
 
 
 // Create or get a chat between two users
 exports.createOrGetChat = async (req, res) => {
     const { userId, otherUserId } = req.body;
+
+    if (!userId || !otherUserId) {
+        return res.status(400).json({ error: 'Both userId and otherUserId are required.' });
+    }
 
     try {
         // Check if a chat already exists between the users
@@ -15,7 +18,7 @@ exports.createOrGetChat = async (req, res) => {
         // If no chat exists, create a new one
         if (!chat) {
             chat = await Chat.create({
-                users: [userId, otherUserId]
+                users: [userId, otherUserId] // Ensure only two users
             });
         }
 
