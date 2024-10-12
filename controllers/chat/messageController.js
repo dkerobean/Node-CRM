@@ -3,9 +3,12 @@ const Message = require('../../models/messageModel');
 
 // Send a message in a chat
 exports.sendMessage = async (req, res) => {
-    const { chatId, senderId, message, files } = req.body;
+    const { chatId, senderId, message } = req.body;
 
     try {
+        // Collect uploaded file paths
+        const files = req.files.map(file => file.path);
+
         // Create a new message
         const newMessage = await Message.create({
             chat: chatId,
@@ -16,7 +19,7 @@ exports.sendMessage = async (req, res) => {
 
         // Update the last message in the chat
         await Chat.findByIdAndUpdate(chatId, {
-            lastMessage: message,
+            lastMessage: message || (files.length > 0 ? 'File Attachment' : ''),
             lastMessageAt: Date.now()
         });
 
