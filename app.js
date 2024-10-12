@@ -55,5 +55,9 @@ app.use('/api/chat', auth, chatRoutes);
 // message routes
 app.use('/api/messages', auth, messageRoutes);
 
+// Serve static files (for uploaded files)
+const path = require('path');
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 
 module.exports = app;
