@@ -13,10 +13,13 @@ const server = http.createServer(app);
 // Initialize Socket.io
 const io = new Server(server, {
     cors: {
-        origin: '*', // Allow all origins (you can specify specific URLs in production)
+        origin: '*',
         methods: ['GET', 'POST']
     }
 });
+
+// Make `io` available in `app`
+app.set('io', io);
 
 // Socket.io connection
 io.on('connection', (socket) => {

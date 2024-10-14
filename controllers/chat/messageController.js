@@ -1,9 +1,11 @@
+
 const Message = require('../../models/messageModel');
 const Chat = require('../../models/chatModel');
 
 // Send a message in a chat
 exports.sendMessage = async (req, res) => {
     const { chatId, senderId, message } = req.body;
+    const io = req.app.get('io'); // Get the Socket.io instance
 
     try {
         // Collect uploaded file paths
@@ -23,6 +25,15 @@ exports.sendMessage = async (req, res) => {
             lastMessageAt: Date.now()
         });
 
+        // Emit the new message to all users in the chat room
+        io.to(chatId).emit('newMessage', {
+            chatId,
+            senderId,
+            message,
+            files,
+            timestamp: new Date()
+        });
+
         res.status(201).json(newMessage);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -40,4 +51,3 @@ exports.getMessages = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
- 
