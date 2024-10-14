@@ -9,6 +9,7 @@ const PORT = process.env.PORT || 5000;
 
 // Create an HTTP server
 const server = http.createServer(app);
+console.log('server');
 
 // Initialize Socket.io
 const io = new Server(server, {
@@ -27,6 +28,8 @@ io.on('connection', (socket) => {
         socket.join(chatId);
         console.log(`User with ID ${socket.id} joined chat room ${chatId}`);
     });
+
+    console.log(io);
 
     // Listen for a new message and emit it to the chat room
     socket.on('sendMessage', (messageData) => {
