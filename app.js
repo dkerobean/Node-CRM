@@ -1,5 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const cors = require('cors');  // Import CORS
 const connectDB = require('./config/db');
 const { swaggerUi, swaggerDocs } = require('./swagger');
 
@@ -23,6 +24,14 @@ dotenv.config();
 connectDB();  // Connect to MongoDB
 
 const app = express();
+
+// const corsOptions = {
+//     origin: 'http://localhost:5173', // Replace with your frontend URL
+//     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed methods
+//     credentials: true, // Allow credentials (if needed)
+// };
+app.use(cors());  // Enable CORS for all routes
+
 app.use(express.json());  // To parse JSON requests
 
 // Swagger UI setup

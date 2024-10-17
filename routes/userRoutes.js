@@ -33,7 +33,7 @@ const auth = require('../middleware/authMiddleware');
  *       500:
  *         description: Server error
  */
-router.get('/users', auth, getUsers);
+router.get('/users', getUsers);
 
 /**
  * @swagger
