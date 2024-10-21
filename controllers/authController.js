@@ -79,8 +79,7 @@ const registerOrganization = async (req, res) => {
 
 // Login User
 const loginUser = async (req, res) => {
-    const { email, password } = req.query;
-    console.log(email);
+    const { email, password } = req.body;
 
     try {
         // Check if user exists
@@ -113,7 +112,7 @@ const loginUser = async (req, res) => {
 
 // Verify Email
 const verifyEmail = async (req, res) => {
-    const { email, code } = req.query;
+    const { email, code } = req.body;
 
     try {
         const user = await User.findOne({ email });
