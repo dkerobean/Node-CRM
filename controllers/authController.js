@@ -3,7 +3,7 @@ const User = require('../models/userModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const { sendVerificationEmail } = require('../middleware/mailer');
+const { sendVerificationEmail } = require('../middleware/sendVerificationEmail');
 
 // Function to generate a random 5-digit code
 const generateVerificationCode = () => {
