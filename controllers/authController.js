@@ -68,12 +68,14 @@ const registerOrganization = async (req, res) => {
         const token = jwt.sign(
             { userId: owner._id, organizationId: organization._id, role: owner.role },
             process.env.JWT_SECRET,
-            { expiresIn: '1h' } // Adjust the expiration time as needed
+            { expiresIn: '1h' }
         );
 
         res.status(201).json({
             message: 'Registration success, please verify your email',
             organization,
+            email: owner.email,
+            token
         });
 
     } catch (error) {
