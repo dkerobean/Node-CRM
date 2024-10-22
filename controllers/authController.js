@@ -64,6 +64,13 @@ const registerOrganization = async (req, res) => {
             return res.status(500).json({ message: 'Failed to send verification email' });
         }
 
+        // Generate JWT
+        const token = jwt.sign(
+            { userId: owner._id, organizationId: organization._id, role: owner.role },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' } // Adjust the expiration time as needed
+        );
+
         res.status(201).json({
             message: 'Registration success, please verify your email',
             organization,
