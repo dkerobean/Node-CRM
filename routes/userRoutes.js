@@ -1,8 +1,11 @@
 const express = require('express');
 const { getUsers } = require('../controllers/userController');
+const { getUserWithToken } = require('../controllers/userController');
 const router = express.Router();
 const { loginUser, registerOrganization, verifyEmail } = require('../controllers/authController');
 const auth = require('../middleware/authMiddleware');
+
+router.get('/user', auth, getUserWithToken);
 
 /**
  * @swagger
