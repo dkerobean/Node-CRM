@@ -13,4 +13,5 @@ const getAllDeals = async (req, res) => {
     }
 };
 
+
 module.exports = { getAllDeals };

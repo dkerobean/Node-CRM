@@ -99,3 +99,72 @@ exports.getMetrics = async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch metrics' });
     }
 };
+
+exports.getMonthlyData = async (req, res) => {
+    try {
+        // Current year to filter data
+        const currentYear = new Date().getFullYear();
+
+        // Aggregate closed won data
+        const closedWonData = await Deal.aggregate([
+            {
+                $match: {
+                    closedWonDate: { $gte: new Date(`${currentYear}-01-01`), $lt: new Date(`${currentYear + 1}-01-01`) }
+                }
+            },
+            {
+                $group: {
+                    _id: { $month: "$closedWonDate" }, // Group by month
+                    totalWon: { $sum: 1 }, // Count of deals won
+                    totalRevenue: { $sum: "$value" } // Sum of deal values
+                }
+            },
+            {
+                $project: {
+                    month: "$_id",
+                    totalWon: 1,
+                    totalRevenue: 1,
+                    _id: 0 // Exclude the default _id field
+                }
+            },
+            {
+                $sort: { month: 1 } // Sort by month
+            }
+        ]);
+
+        // Aggregate closed lost data
+        const closedLostData = await Deal.aggregate([
+            {
+                $match: {
+                    closedLostDate: { $gte: new Date(`${currentYear}-01-01`), $lt: new Date(`${currentYear + 1}-01-01`) }
+                }
+            },
+            {
+                $group: {
+                    _id: { $month: "$closedLostDate" }, // Group by month
+                    totalLost: { $sum: 1 } // Count of deals lost
+                }
+            },
+            {
+                $project: {
+                    month: "$_id",
+                    totalLost: 1,
+                    _id: 0 // Exclude the default _id field
+                }
+            },
+            {
+                $sort: { month: 1 } // Sort by month
+            }
+        ]);
+
+        return res.status(200).json({
+            message: 'Monthly data retrieved successfully',
+            closedWonData,
+            closedLostData,
+        });
+    } catch (error) {
+        console.error('Error retrieving monthly data:', error);
+        return res.status(500).json({ message: 'Server error. Please try again later.' });
+    }
+};
+

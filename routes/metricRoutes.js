@@ -8,4 +8,6 @@ router.put('/update/:userId', metricsController.updateMetrics);
 // Route to get global metrics
 router.get('/all/:userId', metricsController.getMetrics);
 
+router.get('/month/data', metricsController.getMonthlyData);
+
 module.exports = router;
