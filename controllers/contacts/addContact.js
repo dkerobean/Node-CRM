@@ -4,7 +4,9 @@ const User = require("../../models/userModel");
 const addContact = async (req, res) => {
     try {
         const { name, email, phone, company, position, notes, status, leadDetails, assignedTo } = req.body;
+        const organization = req.user.organization; // Extract organization from the authenticated user
 
+        // Validate required fields
         if (!name || !email || !phone) {
             return res.status(400).json({ message: 'Name, email, and phone are required fields.' });
         }
@@ -33,7 +35,8 @@ const addContact = async (req, res) => {
             notes,
             status: status || 'prospect',
             leadDetails: status === 'lead' ? leadDetails : undefined, // Only include lead details if status is 'lead'
-            assignedTo: assignedTo || null
+            assignedTo: assignedTo || null,
+            organization 
         });
 
         const savedContact = await newContact.save();
