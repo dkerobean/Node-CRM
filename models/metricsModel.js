@@ -1,5 +1,15 @@
 const mongoose = require('mongoose');
 
+const monthlyDataSchema = new mongoose.Schema({
+    month: { type: String, required: true },
+    year: { type: Number, required: true },
+    revenue: { type: Number, default: 0 },
+    closedWon: { type: Number, default: 0 },
+    closedLost: { type: Number, default: 0 },
+    closedWonDate: { type: Date },
+    closedLostDate: { type: Date }  
+});
+
 const metricsSchema = new mongoose.Schema({
     totalLeads: Number,
     totalClients: Number,
@@ -28,7 +38,8 @@ const metricsSchema = new mongoose.Schema({
     updatedAt: {
         type: Date,
         default: Date.now
-    }
+    },
+    monthlyData: [monthlyDataSchema] // Array to hold monthly metrics
 });
 
 const Metrics = mongoose.model('Metrics', metricsSchema);

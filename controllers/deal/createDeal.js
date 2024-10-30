@@ -3,7 +3,6 @@ const User = require("../../models/userModel");
 const Contact = require("../../models/contactModel");
 const Organization = require("../../models/organizationModel");
 
-
 const addDeal = async (req, res) => {
     try {
         const {
@@ -45,6 +44,16 @@ const addDeal = async (req, res) => {
             uploadedAt: Date.now()
         })) : []; // Default to an empty array if req.files is undefined
 
+        // Determine closedWonDate and closedLostDate based on status
+        let closedWonDate = null;
+        let closedLostDate = null;
+
+        if (status === 'Closed Won') {
+            closedWonDate = new Date();
+        } else if (status === 'Closed Lost') {
+            closedLostDate = new Date();
+        }
+
         // Create a new deal
         const newDeal = new Deal({
             name,
@@ -58,7 +67,9 @@ const addDeal = async (req, res) => {
             createdBy,
             notes,
             organization,
-            files
+            files,
+            closedWonDate, // Add closedWonDate
+            closedLostDate, // Add closedLostDate
         });
 
         // Save the deal to the database
@@ -73,6 +84,5 @@ const addDeal = async (req, res) => {
         return res.status(500).json({ message: 'Server error. Please try again later.' });
     }
 };
-
 
 module.exports = { addDeal };

@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-
 const dealSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -49,11 +48,17 @@ const dealSchema = new mongoose.Schema({
     notes: {
         type: String,
     },
-    files: [{ 
+    files: [{
         fileName: { type: String, required: true },
         filePath: { type: String, required: true }, // Path to the stored file
         uploadedAt: { type: Date, default: Date.now }
-    }]
+    }],
+    closedWonDate: {
+        type: Date, // Date when the deal was closed won
+    },
+    closedLostDate: {
+        type: Date, // Date when the deal was closed lost
+    }
 }, {
     timestamps: true, // Automatically manages createdAt and updatedAt fields
 });

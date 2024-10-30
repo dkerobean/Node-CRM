@@ -1,4 +1,5 @@
 const Deal = require("../../models/dealModel");
+const Metrics = require("../../models/metricsModel"); // Import the Metrics model
 const User = require("../../models/userModel");
 const Contact = require("../../models/contactModel");
 const Organization = require("../../models/organizationModel");
@@ -24,7 +25,7 @@ const editDeal = async (req, res) => {
             return res.status(400).json({ message: 'Name, description, value, and stage are required fields.' });
         }
 
-        // Check if the assigned user exists, if it's being updated
+        // Check if the assigned user exists
         if (assignedTo) {
             const assignedUser = await User.findById(assignedTo);
             if (!assignedUser) {
@@ -32,7 +33,7 @@ const editDeal = async (req, res) => {
             }
         }
 
-        // Check if the contact exists, if it's being updated
+        // Check if the contact exists
         if (contact) {
             const contactExists = await Contact.findById(contact);
             if (!contactExists) {
@@ -40,7 +41,7 @@ const editDeal = async (req, res) => {
             }
         }
 
-        // Check if the organization exists, if it's being updated
+        // Check if the organization exists
         if (organization) {
             const organizationExists = await Organization.findById(organization);
             if (!organizationExists) {
@@ -48,27 +49,37 @@ const editDeal = async (req, res) => {
             }
         }
 
-        // Update the deal
-        const updatedDeal = await Deal.findByIdAndUpdate(
-            dealId,
-            {
-                name,
-                description,
-                value,
-                status: status || 'Prospect', // Default to 'Prospect' if not provided
-                contact: contact || null, // Set to null if no contact is provided
-                assignedTo: assignedTo || null, // Set to null if no assigned user is provided
-                closeDate,
-                stage: stage || 'Initial Contact', // Default to 'Initial Contact' if not provided
-                notes,
-                organization: organization || null // Set to null if no organization is provided
-            },
-            { new: true } // Return the updated deal
-        );
-
-        if (!updatedDeal) {
+        // Fetch the existing deal to check the previous status
+        const existingDeal = await Deal.findById(dealId);
+        if (!existingDeal) {
             return res.status(404).json({ message: 'Deal not found.' });
         }
+
+        // Update the closed dates based on the new status
+        const updatedDealData = {
+            name,
+            description,
+            value,
+            status: status || existingDeal.status, // Keep previous status if not provided
+            contact: contact || existingDeal.contact,
+            assignedTo: assignedTo || existingDeal.assignedTo,
+            closeDate,
+            stage: stage || existingDeal.stage,
+            notes,
+            organization: organization || existingDeal.organization
+        };
+
+        // Set the closed dates if the status is changed
+        if (status === 'Closed Won' && existingDeal.status !== 'Closed Won') {
+            updatedDealData.closedWonDate = new Date(); // Set to current date if status is now closed won
+            updatedDealData.closedLostDate = null; // Clear closed lost date if status is now closed won
+        } else if (status === 'Closed Lost' && existingDeal.status !== 'Closed Lost') {
+            updatedDealData.closedLostDate = new Date(); // Set to current date if status is now closed lost
+            updatedDealData.closedWonDate = null; // Clear closed won date if status is now closed lost
+        }
+
+        // Update the deal
+        const updatedDeal = await Deal.findByIdAndUpdate(dealId, updatedDealData, { new: true });
 
         return res.status(200).json({
             message: 'Deal updated successfully',
