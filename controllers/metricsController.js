@@ -13,6 +13,10 @@ exports.updateMetrics = async (req, res) => {
         const user = await User.findById(userId).populate('organization');
         const organizationId = user.organization;
 
+        if (!organizationId) {
+            return res.status(404).json({ error: 'Organization not found for user' });
+        }
+
         // Compute metrics for contacts belonging to the user's organization
         const totalLeads = await Contact.countDocuments({ status: 'lead', organization: organizationId });
         const totalClients = await Contact.countDocuments({ status: 'client', organization: organizationId });
@@ -20,21 +24,25 @@ exports.updateMetrics = async (req, res) => {
 
         // Compute deal-related metrics
         const closedWonCount = await Deal.countDocuments({ status: 'Closed Won', organization: organizationId });
-        const totalClosedDeals = await Deal.countDocuments({
-            status: { $in: ['Closed Won', 'Closed Lost'] },
-            organization: organizationId
-        });
+        const closedLostCount = await Deal.countDocuments({ status: 'Closed Lost', organization: organizationId });
+        const totalClosedDeals = closedWonCount + closedLostCount;
         const winRate = totalClosedDeals > 0 ? (closedWonCount / totalClosedDeals) * 100 : 0;
+
+        console.log(`Closed Won Count: ${closedWonCount}, Closed Lost Count: ${closedLostCount}`);
 
         // Calculate total revenue and average deal value from closed won deals
         const deals = await Deal.find({ status: 'Closed Won', organization: organizationId });
         const totalRevenue = deals.reduce((sum, deal) => sum + deal.value, 0);
         const avgDealValue = deals.length > 0 ? totalRevenue / deals.length : 0;
 
+        console.log(`Total Revenue: ${totalRevenue}, Avg Deal Value: ${avgDealValue}`);
+
         // Compute task completion metrics
         const totalTasks = await Task.countDocuments({ organization: organizationId });
         const completedTasks = await Task.countDocuments({ status: 'Completed', organization: organizationId });
         const taskCompletionRate = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+
+        console.log(`Total Tasks: ${totalTasks}, Completed Tasks: ${completedTasks}, Task Completion Rate: ${taskCompletionRate}`);
 
         // Update or create metrics for the organization
         const metrics = await Metrics.findOneAndUpdate(
@@ -47,7 +55,7 @@ exports.updateMetrics = async (req, res) => {
                     prospect: await Deal.countDocuments({ status: 'Prospect', organization: organizationId }),
                     negotiation: await Deal.countDocuments({ status: 'Negotiation', organization: organizationId }),
                     closedWon: closedWonCount,
-                    closedLost: await Deal.countDocuments({ status: 'Closed Lost', organization: organizationId }),
+                    closedLost: closedLostCount,
                 },
                 totalRevenue,
                 avgDealValue,
@@ -60,12 +68,15 @@ exports.updateMetrics = async (req, res) => {
             { new: true, upsert: true }
         );
 
+        console.log(`Metrics Updated: ${metrics}`);
+
         res.status(200).json(metrics);
     } catch (error) {
         console.error('Error updating metrics:', error);
         res.status(500).json({ error: 'Failed to update metrics' });
     }
 };
+
 
 exports.getMetrics = async (req, res) => {
     try {

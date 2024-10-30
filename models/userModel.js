@@ -1,4 +1,5 @@
 // userModel.js
+
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
@@ -11,11 +12,12 @@ const userSchema = new mongoose.Schema({
         default: 'user'
     },
     isVerified: { type: Boolean, default: false },
-    verificationCode: { type: String }, // Store verification code
-    verificationExpires: { type: Date }, // Store expiration time for the verification code
+    verificationCode: { type: String },
+    verificationExpires: { type: Date },
     organization: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Organization'
+        ref: 'Organization',
+        required: true 
     },
 }, {
     timestamps: true,
@@ -23,5 +25,5 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
-
 module.exports = User;
+
