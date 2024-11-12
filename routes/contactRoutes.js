@@ -3,6 +3,7 @@ const { addContact } = require('../controllers/contacts/addContact');
 const { editContact } = require('../controllers/contacts/editContact');
 const { getAllContacts } = require('../controllers/contacts/allContacts');
 const { deleteContact } = require('../controllers/contacts/deleteContact');
+const { getContactById } = require('../controllers/contacts/viewContact');
 
 const router = express.Router();
 
@@ -130,5 +131,7 @@ router.put('/edit/:id', editContact);
  *         description: Internal server error
  */
 router.delete('/delete/:id', deleteContact);
+
+router.get('/view/:id', getContactById);
 
 module.exports = router;
