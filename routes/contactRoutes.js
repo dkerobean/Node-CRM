@@ -132,6 +132,27 @@ router.put('/edit/:id', editContact);
  */
 router.delete('/delete/:id', deleteContact);
 
+/**
+ * @swagger
+ * /api/contact/view/{id}:
+ *   get:
+ *     summary: View a single contact
+ *     tags: [Contacts]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the contact to view
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved the contact
+ *       404:
+ *         description: Contact not found
+ *       500:
+ *         description: Internal server error
+ */
 router.get('/view/:id', getContactById);
 
 module.exports = router;
