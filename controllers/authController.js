@@ -181,6 +181,12 @@ const registerOrganization = async (req, res) => {
             return res.status(400).json({ message: 'Organization already exists' });
         }
 
+        // Check if email already exists
+        const emailExists = await User.findOne({ email });
+        if (emailExists) {
+            return res.status(400).json({ message: 'Email is already in use' }); // Custom error message for email duplication
+        }
+
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
